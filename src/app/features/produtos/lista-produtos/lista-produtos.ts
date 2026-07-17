@@ -1,36 +1,39 @@
 import { Component } from '@angular/core';
 import { Produto } from '../produto/produto';
-
+import { signal } from '@angular/core';
+import { computed } from '@angular/core';
+import { PrecoFormatadoPipe } from '../../../shared/pipes/preco-formatado-pipe';
 @Component({
   selector: 'app-lista-produtos',
-  imports: [Produto],
+  imports: [Produto,  PrecoFormatadoPipe],
   templateUrl: './lista-produtos.html',
   styleUrl: './lista-produtos.css',
 })
 export class ListaProdutos {
- produtos = [
-    { 
-      nome: 'Teclado Gamer', 
-      preco:149.00
-    },
-    {
-      nome: 'Mouse Gamer', 
-      preco:299.99
-    },
-    {
-      nome: 'Monitor Gamer', 
-      preco:1599.99
-    },
-    {
-      nome: 'Desktop Gamer', 
-      preco:4999.99
-    },
-    {
-      nome: 'Headset Gamer', 
-      preco:699.99
-    }
-  ];
+ produtos = signal( [
+    { nome: 'Teclado Gamer', preco:149.00},
+    { nome: 'Mouse Gamer', preco:299.99},
+    { nome: 'Monitor Gamer', preco:1599.99},
+    { nome: 'Desktop Gamer', preco:4999.99},
+    { nome: 'Headset Gamer', preco:699.99}
+  ]);
+  //!função para exibir produtos selecionados pelo usuarios no console
   exibirProduto (nome: string){
     console.log ('Produto Selecionado: ', nome);
   }
+  //!função que adicionar produtos usando metodo update
+  adicionarProduto(){
+    this.produtos.update(listaAtual =>[
+      ...listaAtual,
+      {nome:'playstation 5', preco:3000}
+]);
+  }
+  //!função que contabiliza a quatidade de itens de produtos na lista
+  totalProdutos = computed(() => this.produtos().length);
+  //!função que calcula o valor total do produtos usando o metado computed
+  valorTotal = computed(()=>
+  {return this.produtos().reduce((total, item) =>
+    total + item.preco,0
+  )}
+);
 }
