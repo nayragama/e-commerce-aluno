@@ -5,21 +5,18 @@ import { computed } from '@angular/core';
 import { PrecoFormatadoPipe } from '../../../shared/pipes/preco-formatado-pipe';
 import { effect } from '@angular/core';
 import { UpperCasePipe } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-lista-produtos',
-  imports: [Produto,  PrecoFormatadoPipe, UpperCasePipe],
+  imports: [Produto,  PrecoFormatadoPipe],
   templateUrl: './lista-produtos.html',
   styleUrl: './lista-produtos.css',
 })
 export class ListaProdutos {
- produtos = signal( [
-    { nome: 'Teclado Gamer', preco:149.00},
-    { nome: 'Mouse Gamer', preco:299.99},
-    { nome: 'Monitor Gamer', preco:1599.99},
-    { nome: 'Desktop Gamer', preco:4999.99},
-    { nome: 'Headset Gamer', preco:699.99}
-  ]);
+  //!======Signals=====
+ produtos = signal<{nome: string; preco: number}[]>([]);
+ carregando = signal(true);
   //!função para exibir produtos selecionados pelo usuarios no console
   exibirProduto (nome: string){
     console.log ('Produto Selecionado: ', nome);
@@ -48,8 +45,32 @@ export class ListaProdutos {
         {nome:'headset', preco: 30},
       ])
     }
+    //?=========== MÉTODO HTTP CLINT (API) ==========
+    carregarProdutos(){
+      this.carregando.set(true);
+      this.http.get<{title: string; price: number}[]>
+      ('https://fakestoreapi.com/products').subscribe({
+      next: (dados) => {
+        const produtosFormatados = dados.map(p => ({
+          nome: p.title,
+          preco: p.price
+        }));
+        this.produtos.set(produtosFormatados);
+        this.carregando.set(false);
+      },
+      error: (erro) => {
+        console.error('Erro ao carregar produtos:', erro);
+        this.carregando.set(false);
+      }
+    });
+
+  }
+//** ======== CONSTRUCTOR ========
     //! metodo para monitorar alterações em tempo real usando effect
-    constructor(){
+    constructor(private http: HttpClient){
+      //? Carrega a API
+      this.carregarProdutos();
+      //! effect continuam iguais - não mexer
       effect(() => {
         console.log ('Lista de Produtos Alterados: ', this.produtos());
       });
