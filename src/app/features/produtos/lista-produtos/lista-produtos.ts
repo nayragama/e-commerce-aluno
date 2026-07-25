@@ -4,17 +4,21 @@ import { signal } from '@angular/core';
 import { computed } from '@angular/core';
 import { PrecoFormatadoPipe } from '../../../shared/pipes/preco-formatado-pipe';
 import { effect } from '@angular/core';
-import { UpperCasePipe } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
+import { title } from 'process';
+import { strict } from 'assert';
+import { error } from 'console';
+import { produtosService } from '../produto/produtos.service';
+import { inject } from '@angular/core';
 
 @Component({
   selector: 'app-lista-produtos',
-  imports: [Produto,  PrecoFormatadoPipe],
+  imports: [Produto, PrecoFormatadoPipe],
   templateUrl: './lista-produtos.html',
   styleUrl: './lista-produtos.css',
 })
 export class ListaProdutos {
-  //!======Signals=====
+  private produtosService = inject(produtosService);
+  //!============= Sgnals ==============
  produtos = signal<{nome: string; preco: number}[]>([]);
  carregando = signal(true);
   //!função para exibir produtos selecionados pelo usuarios no console
@@ -45,29 +49,24 @@ export class ListaProdutos {
         {nome:'headset', preco: 30},
       ])
     }
-    //?=========== MÉTODO HTTP CLINT (API) ==========
+    //?=============== MÉTODO HTTP CLINT (API) ==============
     carregarProdutos(){
       this.carregando.set(true);
-      this.http.get<{title: string; price: number}[]>
-      ('https://fakestoreapi.com/products').subscribe({
-      next: (dados) => {
-        const produtosFormatados = dados.map(p => ({
-          nome: p.title,
-          preco: p.price
-        }));
-        this.produtos.set(produtosFormatados);
-        this.carregando.set(false);
-      },
-      error: (erro) => {
-        console.error('Erro ao carregar produtos:', erro);
-        this.carregando.set(false);
-      }
-    });
-
-  }
-//** ======== CONSTRUCTOR ========
+      this.produtosService.buscarProdutos().subscribe({
+        next: (dados) => {
+          const produtos = this.produtosService.transformarProdutos(dados);
+          this.produtos.set(produtos);
+          this.carregando.set(false);
+        },
+        error: (erro) => {
+          console.error('Erro ao carregar produtos:', erro);
+          this.carregando.set(false);
+        }
+      });
+     }
+//** =================== CONSTRUCTOR =====================
     //! metodo para monitorar alterações em tempo real usando effect
-    constructor(private http: HttpClient){
+    constructor(){
       //? Carrega a API
       this.carregarProdutos();
       //! effect continuam iguais - não mexer
