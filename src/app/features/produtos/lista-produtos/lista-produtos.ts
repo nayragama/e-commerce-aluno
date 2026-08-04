@@ -21,6 +21,7 @@ export class ListaProdutos {
   //!============= Sgnals ==============
  produtos = signal<{nome: string; preco: number}[]>([]);
  carregando = signal(true);
+ erro = signal<string | null>(null);
   //!função para exibir produtos selecionados pelo usuarios no console
   exibirProduto (nome: string){
     console.log ('Produto Selecionado: ', nome);
@@ -51,7 +52,8 @@ export class ListaProdutos {
     }
     //?=============== MÉTODO HTTP CLINT (API) ==============
     carregarProdutos(){
-      this.carregando.set(true);
+      this.erro.set(null); //Limpa o estado de erro antes de iniciar a requisição
+      this.carregando.set(true); //ativar o sinal de carregamento antes de iniciar a requisição
       this.produtosService.buscarProdutos().subscribe({
         next: (dados) => {
           const produtos = this.produtosService.transformarProdutos(dados);
