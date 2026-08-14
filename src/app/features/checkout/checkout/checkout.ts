@@ -1,6 +1,8 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms'
+import { Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { CarrinhoServise } from '../../../core/services/carrinho.service';
+
 
 @Component({
   selector: 'app-checkout',
@@ -9,18 +11,49 @@ import { CarrinhoServise } from '../../../core/services/carrinho.service';
   styleUrl: './checkout.css',
 })
 export class Checkout {
-  
  carrinhoService = inject(CarrinhoServise);
 
+ compraFinalizada = signal(false);
+
  formulario = new FormGroup({
-   nome: new FormControl(''),
-   email: new FormControl(''),
-   endereco:new FormControl(''),
+   nome: new FormControl('',[Validators.required,Validators.minLength(2), nomeSemNumeros]),
+   email: new FormControl('',[Validators.required, Validators.email]),
+   endereco:new FormControl('',[Validators.required, Validators.minLength(5)]),
   });
 
   finalizar (){
-    console.log('Dados do Formulário:', this.formulario.value);
-    console.log('Itens do Carrinho:', this.carrinhoService.itens());
+    this.compraFinalizada.set(false);
 
+     if(this.carrinhoService.carrinhoVazio()){
+      console.log('Não é possível finalizar a compra com o carrinho vazio');
+      return;
+     }
+
+    if(this.formulario.invalid){
+      console.log('Formulário Invalido!');
+      this.formulario.markAllAsTouched();
+      return;
+    }
+
+    const dados = this.formulario.value;
+    const itens = this.carrinhoService.itens();
+    const total = this.carrinhoService.totalItens();
+    
+    console.log('Compra finalizada com sucesso!');
+    console.log('Dados do Formulário:', dados);
+    console.log('Itens do Carrinho:', itens);
+    console.log('Total de compras:', total);
+    
+    this.carrinhoService.limpar();
+    this.formulario.reset();
+    this.compraFinalizada.set(true);
   }
+}
+function nomeSemNumeros(controle:AbstractControl):ValidationErrors | null {
+  const valor = controle.value;
+  if(!valor) return null;
+  if(/\d/.test(valor)){
+    return {numeroInvalido:true};
+  }
+  return null
 }
