@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms'
 import { Validators, AbstractControl, ValidationErrors } from '@angular/forms';
-import { CarrinhoServise } from '../../../core/services/carrinho.service';
+import { CarrinhoService } from '../../../core/services/carrinho.service';
 
 
 @Component({
@@ -11,7 +11,7 @@ import { CarrinhoServise } from '../../../core/services/carrinho.service';
   styleUrl: './checkout.css',
 })
 export class Checkout {
- carrinhoService = inject(CarrinhoServise);
+ carrinhoService = inject(CarrinhoService);
 
  compraFinalizada = signal(false);
 
