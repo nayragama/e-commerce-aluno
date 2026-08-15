@@ -9,7 +9,7 @@ import { strict } from 'assert';
 import { error } from 'console';
 import { produtosService } from '../../../core/services/produtos.service';
 import { inject } from '@angular/core';
-import { CarrinhoServise } from '../../../core/services/carrinho.service';
+import { CarrinhoService } from '../../../core/services/carrinho.service';
 
 @Component({
   selector: 'app-lista-produtos',
@@ -95,7 +95,7 @@ export class ListaProdutos {
  //** ==================== INJECT ================================
  
  private produtosService = inject(produtosService);
- public carrinhoService = inject(CarrinhoServise);
+ public carrinhoService = inject(CarrinhoService);
 
  quantidadeCarrinho = this.carrinhoService.quantidadeItens;
  totalCarrinho = this.carrinhoService.totalItens;
