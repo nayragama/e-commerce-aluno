@@ -1,6 +1,6 @@
 import { Injectable, signal, computed } from "@angular/core";
 
-type PerfilUsuario = 'usuario';
+type PerfilUsuario = 'usuario' | 'admin';
 
 type Usuario ={
     email: string;
@@ -19,6 +19,7 @@ export class AuthService{
     usuarioAtual = computed(() => this.usuario());
     usuarioLogado = computed(() => this.usuario() !== null);
     token = computed(() => this.tokenJwt());
+    admin = computed(() =>this.usuario()?.perfil ==='admin');
 
     login( email: string, senha: string): boolean {
 
@@ -46,5 +47,8 @@ export class AuthService{
 
     obterToken(): string | null {
         return this.tokenJwt();
+    }
+    obterPerfil(): PerfilUsuario | null{
+        return this.usuario()?.perfil ?? null;
     }
 }
