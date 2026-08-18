@@ -3,15 +3,17 @@
  import { catchError } from "rxjs";     
  import { throwError } from "rxjs";
  import { inject } from "@angular/core";   
- import { AuthService } from "../services/auth.service";  
+ import { AuthService } from "../services/auth.service";
+ import { Router } from '@angular/router';
                                      
 
  export const HttpInterceptor: HttpInterceptorFn = (req, next) => {
     
     console.log('Requisição: ', req.url);
 
-     //aui vc pode adicionar lógica para modificar a requisição
+     //aqui vc pode adicionar lógica para modificar a requisição
      const authService =inject(AuthService);
+     const router = inject(Router);
      const token = authService.obterToken();
 
      const novaReq = token ?
@@ -27,14 +29,19 @@
         }),
         catchError((error) => {
             console.error('Erro de Requisição Global: ', error);
-        if (error.status === 401) {
-            console.warn('Erro de autenticação do Usuario: ');
-        }
+            if (error.status === 401){
+                console.warn('Erro de autenticação do Usuario: ',);
+                authService.logout();
+                router.navigateByUrl('/login');
+            }
           if (error.status === 500) {
-            console.warn('Erro interno do servidor!', error);
-        }
+              console.warn('Erro interno do servidor!', error);
+            }
+            if(error.status === 403){
+                console.warn('Acesso Proibido, Usuário sem permissão!');
+                router.navigateByUrl('/produtos');
+            }
             return throwError(() => error);
         }),
      );
-
  };
