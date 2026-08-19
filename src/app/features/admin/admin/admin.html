@@ -2,4 +2,38 @@
     <h2>Área Administrativa</h2>
     <!-- Está pag representa uma area da aplicação-->
      <p>Somente usuários com perfil administrador devem conseguir acessaressa rota</p>
+     
+     <hr />
+     <section class="bloco-admin">
+         <p><strong>E-mail:</strong> {{ usuarioAtual()?.email }}</p>
+         <p><strong>Perfil:</strong> {{ usuarioAtual()?.perfil }}</p>
+         <p>{{ mensagemPerfil() }}</p>
+     </section>
+     <hr />
+     <section class="cards-admin">
+        <article>
+            <h3>Produtos cadastrados</h3>
+            <p>{{ totalProdutosCadastrados() }}</p>
+        </article>
+
+               <article>
+            <h3>Pedidos pendentes</h3>
+            <p>{{ pedidosPendentes() }}</p>
+        </article>
+               <article>
+            <h3>Usuários cadastrados</h3>
+            <p>{{ usuariosCadastrados() }}</p>
+        </article>
+     </section>
+     <hr>
+     <section class="bloco-admin">
+        <p>
+            Nesta etapa do curso, estas ações ainda são apenas representativas.
+            Nas próximas evoluções, poderiam ser conectadas a APIs reais.
+        </p>
+
+        <button type="button">Cadastrar produto</button>
+        <button type="button">Gerenciar pedidos</button>
+        <button type="button">Gerenciar usuários</button>
+     </section>
 </section>
