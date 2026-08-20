@@ -28,12 +28,3 @@
   }
     </section>
 }
-
-<hr>
-<h2>Carrinho</h2>
-@for(item of carrinhoService.itens(); track $index){
-    <p>{{item.nome}} - {{item.preco | precoFormatado}}</p>
-}
-<hr>
-<p><strong>quatidade de itens no carrinho: </strong>{{ carrinhoService.quantidadeItens()}}</p>
-<p><strong>Valor Total do Carrinho:</strong>{{totalCarrinho() |precoFormatado}}</p>
