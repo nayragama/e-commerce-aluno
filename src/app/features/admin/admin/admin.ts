@@ -1,7 +1,6 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from '../../../core/services/auth.service';
-
+import { AuthFacade } from '../../../core/facades/auth.facade';
 @Component({
 selector: 'app-admin',
 imports: [],
@@ -11,7 +10,7 @@ styleUrl: './admin.css',
 export class Admin {
 
 // A área administrativa passa a ler dados do usuário autenticado
-private authService = inject(AuthService);
+private authFacade = inject(AuthFacade);
 
 // Router usado para voltar para a área pública após logout
 private router = inject(Router);
@@ -21,7 +20,7 @@ totalProdutosCadastrados = signal(20);
 pedidosPendentes = signal(3);
 usuariosCadastrados = signal(8);
 // Computed signal derivado do usuário atual.
-usuarioAtual = this.authService.usuarioAtual;
+usuarioAtual = this.authFacade.usuarioAtual;
 
 // Texto calculado para reforçar o perfil atualmente autenticado
 mensagemPerfil = computed(() => {
@@ -36,7 +35,7 @@ return `Usuário autenticado como ${usuario.perfil}.`;
 
 sair() {
 // Logout também pode ser feito a partir da área administrativa
-this.authService.logout();
+this.authFacade.sair();
 this.router.navigateByUrl('/login');
 }
 }
