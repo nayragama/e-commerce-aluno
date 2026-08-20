@@ -1,26 +1,26 @@
 import { Injectable, inject } from '@angular/core';
 import { CarrinhoService } from '../services/carrinho.service';
-
-type ItemCarrinho = {
-    nome: string;
-    preco: number;
-}
+import { ItemCarrinho } from '../models/item-carrinho';
 
 @Injectable({providedIn: 'root',})
 
 export class CarrinhoFacade {
     private carrinhoService = inject(CarrinhoService);
 
-    itens = this.carrinhoService.itens;
-    quantidade = this.carrinhoService.quantidadeItens;
-    total = this.carrinhoService.totalItens;
+    itensCarrinho = this.carrinhoService.itens;
+    quantidadeCarrinho = this.carrinhoService.quantidadeItens;
+    totalCarrinho = this.carrinhoService.totalItens;
     carrinhoVazio = this.carrinhoService.carrinhoVazio;
 
-    adicionarProduto(produto: ItemCarrinho) {
+    adicionarProdutoCarrinho(produto: ItemCarrinho) {
        this.carrinhoService.adicionar(produto);
     }
 
     limparCarrinho() {
         this.carrinhoService.limpar();
+    }
+
+    removerItem(rmvItem:number){
+        this.carrinhoService.removerItem(rmvItem);
     }
 }
