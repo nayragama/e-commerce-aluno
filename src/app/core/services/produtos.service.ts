@@ -13,7 +13,7 @@ type Produto = {
 };
 
 @Injectable({providedIn: 'root'})
-export class produtosService {
+export class ProdutosService {
     private http = inject(HttpClient);
     private API = 'https://fakestoreapi.com/products';
     buscarProdutos(){
